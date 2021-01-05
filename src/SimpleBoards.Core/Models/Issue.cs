@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SimpleBoards.Core.Models
 {
@@ -105,6 +106,15 @@ namespace SimpleBoards.Core.Models
             };
 
             Comments.Add(comment);
+        }
+
+        public void RemoveComment(int commentId)
+        {
+            var comment = Comments.SingleOrDefault(c => c.Id == commentId);
+            if (comment is not null)
+            {
+                Comments.Remove(comment);
+            }
         }
         #endregion
 
