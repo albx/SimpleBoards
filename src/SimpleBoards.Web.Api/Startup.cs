@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using SimpleBoards.Core.Persistence;
 using SimpleBoards.Persistence.SqlServer;
+using System.Text.Json.Serialization;
 
 namespace SimpleBoards.Web.Api
 {
@@ -34,7 +28,13 @@ namespace SimpleBoards.Web.Api
                     Configuration.GetConnectionString("SimpleBoards"),
                     b => b.MigrationsAssembly(typeof(BoardsContextFactory).Assembly.GetName().Name)));
             
-            services.AddControllers();
+            services
+                .AddControllers()
+                .AddJsonOptions(options => 
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleBoards.Web.Api", Version = "v1" });
