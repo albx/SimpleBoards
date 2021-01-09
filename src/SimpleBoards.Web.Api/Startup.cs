@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using SimpleBoards.Core.Persistence;
 using SimpleBoards.Persistence.SqlServer;
 using System.Text.Json.Serialization;
+using SimpleBoards.Web.Api.Services;
+using SimpleBoards.Core.ReadModels;
+using SimpleBoards.Core.Commands;
 
 namespace SimpleBoards.Web.Api
 {
@@ -27,6 +30,13 @@ namespace SimpleBoards.Web.Api
                 options => options.UseSqlServer(
                     Configuration.GetConnectionString("SimpleBoards"),
                     b => b.MigrationsAssembly(typeof(BoardsContextFactory).Assembly.GetName().Name)));
+
+            services
+                .AddScoped<IDatabase, Database>()
+                .AddScoped<IBoardCommands, BoardCommands>()
+                .AddScoped<IIssueCommands, IssueCommands>();
+
+            services.AddScoped<BoardsControllerServices>();
             
             services
                 .AddControllers()
