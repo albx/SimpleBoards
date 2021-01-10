@@ -4,7 +4,7 @@ namespace SimpleBoards.Core.Commands
 {
     public interface IBoardCommands
     {
-        Task CreateNewBoard(string boardName);
+        Task<int> CreateNewBoard(string boardName);
 
         Task ChangeBoardName(int boardId, string newBoardName);
 

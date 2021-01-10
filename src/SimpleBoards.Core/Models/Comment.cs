@@ -10,6 +10,8 @@ namespace SimpleBoards.Core.Models
 
         public virtual User User { get; set; }
 
+        public int IssueId { get; set; }
+
         public DateTime CommentedAt { get; set; }
     }
 }

@@ -79,7 +79,7 @@ namespace SimpleBoards.Core.Commands
             await Context.SaveChangesAsync();
         }
 
-        public async Task OpenNewIssue(int boardId, string reporterId, Issue.IssueType type, string title, string description)
+        public async Task<int> OpenNewIssue(int boardId, string reporterId, Issue.IssueType type, string title, string description)
         {
             var board = Context.Boards.SingleOrDefault(b => b.Id == boardId);
             if (board is null)
@@ -97,6 +97,8 @@ namespace SimpleBoards.Core.Commands
             Context.Add(issue);
 
             await Context.SaveChangesAsync();
+
+            return issue.Id;
         }
 
         public async Task RejectIssue(int issueId)
@@ -126,7 +128,7 @@ namespace SimpleBoards.Core.Commands
             await Context.SaveChangesAsync();
         }
 
-        public async Task SetIssueAsClosed(int issueId)
+        public async Task CloseIssue(int issueId)
         {
             var issue = Context.Issues.SingleOrDefault(i => i.Id == issueId);
             if (issue is null)
@@ -134,11 +136,11 @@ namespace SimpleBoards.Core.Commands
                 throw new ArgumentOutOfRangeException(nameof(issueId));
             }
 
-            issue.SetAsClosed();
+            issue.Close();
             await Context.SaveChangesAsync();
         }
 
-        public async Task SetIssueAsDone(int issueId)
+        public async Task CompleteIssue(int issueId)
         {
             var issue = Context.Issues.SingleOrDefault(i => i.Id == issueId);
             if (issue is null)
@@ -146,11 +148,11 @@ namespace SimpleBoards.Core.Commands
                 throw new ArgumentOutOfRangeException(nameof(issueId));
             }
 
-            issue.SetAsDone();
+            issue.Complete();
             await Context.SaveChangesAsync();
         }
 
-        public async Task SetIssueAsInProgress(int issueId)
+        public async Task StartWorkOnIssue(int issueId)
         {
             var issue = Context.Issues.SingleOrDefault(i => i.Id == issueId);
             if (issue is null)
@@ -158,7 +160,7 @@ namespace SimpleBoards.Core.Commands
                 throw new ArgumentOutOfRangeException(nameof(issueId));
             }
 
-            issue.SetAsInProgress();
+            issue.Start();
             await Context.SaveChangesAsync();
         }
     }

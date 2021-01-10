@@ -5,15 +5,15 @@ namespace SimpleBoards.Core.Commands
 {
     public interface IIssueCommands
     {
-        Task OpenNewIssue(int boardId, string reporterId, Issue.IssueType type, string title, string description);
+        Task<int> OpenNewIssue(int boardId, string reporterId, Issue.IssueType type, string title, string description);
 
         Task AssignIssue(int issueId, string assigneeId);
 
-        Task SetIssueAsInProgress(int issueId);
+        Task StartWorkOnIssue(int issueId);
 
-        Task SetIssueAsClosed(int issueId);
+        Task CloseIssue(int issueId);
 
-        Task SetIssueAsDone(int issueId);
+        Task CompleteIssue(int issueId);
 
         Task RejectIssue(int issueId);
 

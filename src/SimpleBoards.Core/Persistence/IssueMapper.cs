@@ -15,11 +15,13 @@ namespace SimpleBoards.Core.Persistence
 
             builder
                 .HasOne(i => i.Board)
-                .WithMany();
+                .WithMany(b => b.Issues)
+                .HasForeignKey(i => i.BoardId);
 
             builder
                 .HasMany(i => i.Comments)
                 .WithOne()
+                .HasForeignKey(c => c.IssueId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder

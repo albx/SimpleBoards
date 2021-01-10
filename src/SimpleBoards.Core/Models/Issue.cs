@@ -19,6 +19,8 @@ namespace SimpleBoards.Core.Models
 
         public virtual Board Board { get; protected set; }
 
+        public virtual int BoardId { get; protected set; }
+
         public virtual User Reporter { get; protected set; }
 
         public virtual User Assignee { get; protected set; }
@@ -71,15 +73,19 @@ namespace SimpleBoards.Core.Models
         #endregion
 
         #region Public methods
-        public void Assign(User assignee) => Assignee = assignee ?? throw new ArgumentNullException(nameof(assignee));
+        public void Assign(User assignee) 
+        {
+            Assignee = assignee ?? throw new ArgumentNullException(nameof(assignee));
+            State = IssueState.ToDo;
+        }
 
-        public void SetAsInProgress() => State = IssueState.InProgress;
+        public void Start() => State = IssueState.InProgress;
 
-        public void SetAsClosed() => State = IssueState.Closed;
+        public void Close() => State = IssueState.Closed;
 
-        public void SetAsDone() => State = IssueState.Done;
+        public void Complete() => State = IssueState.Done;
 
-        public void Reject() => State = IssueState.Rejected;
+        public void Reject() => State = IssueState.ToDo;
 
         public void MoveToTesting(User tester)
         {
@@ -102,7 +108,8 @@ namespace SimpleBoards.Core.Models
             var comment = new Comment
             {
                 User = user,
-                Text = text
+                Text = text,
+                CommentedAt = DateTime.UtcNow
             };
 
             Comments.Add(comment);
@@ -129,10 +136,10 @@ namespace SimpleBoards.Core.Models
         public enum IssueState
         {
             New,
+            ToDo,
             InProgress,
             Closed,
             Done,
-            Rejected,
             Testing
         }
         #endregion

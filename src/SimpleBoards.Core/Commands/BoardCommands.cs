@@ -27,12 +27,14 @@ namespace SimpleBoards.Core.Commands
             await Context.SaveChangesAsync();
         }
 
-        public async Task CreateNewBoard(string boardName)
+        public async Task<int> CreateNewBoard(string boardName)
         {
             var board = Board.NewBoard(boardName);
             Context.Add(board);
 
             await Context.SaveChangesAsync();
+
+            return board.Id;
         }
 
         public async Task DeleteBoard(int boardId)
