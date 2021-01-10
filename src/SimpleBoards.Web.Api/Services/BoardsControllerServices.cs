@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SimpleBoards.Core.Commands;
+using SimpleBoards.Core.Models;
 using SimpleBoards.Core.ReadModels;
 using SimpleBoards.Web.Api.Models.Boards;
 
@@ -21,11 +23,17 @@ namespace SimpleBoards.Web.Api.Services
         public BoardListModel GetBoardsList()
         {
             var boards = Database.Boards
+                .Include(b => b.Issues)
                 .Where(b => !b.Deleted)
                 .Select(b => new BoardListModel.BoardListItem
                 {
                     Id = b.Id,
-                    Name = b.Name
+                    Name = b.Name,
+                    NumberOfIssuesDone = b.Issues.Count(i => i.State == Issue.IssueState.Done),
+                    NumberOfNewIssues = b.Issues.Count(i => i.State == Issue.IssueState.New),
+                    NumberOfIssuesInProgress = b.Issues.Count(i => i.State == Issue.IssueState.InProgress),
+                    NumberOfIssuesToDo = b.Issues.Count(i => i.State == Issue.IssueState.ToDo),
+                    NumberOfIssueInTesting = b.Issues.Count(i => i.State == Issue.IssueState.Testing)
                 }).ToArray();
                 
             var model = new BoardListModel
@@ -55,12 +63,7 @@ namespace SimpleBoards.Web.Api.Services
 
         public async Task<int> CreateNewBoard(BoardModel model)
         {
-            await Commands.CreateNewBoard(model.Name);
-            
-            var newBoardId = Database.Boards
-                .Where(b => !b.Deleted)
-                .SingleOrDefault(b => b.Name == model.Name).Id;
-            
+            var newBoardId = await Commands.CreateNewBoard(model.Name);
             return newBoardId;
         }
 

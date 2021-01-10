@@ -28,6 +28,11 @@ namespace SimpleBoards.Web.Api.Controllers
         public IActionResult GetBoardDetail(int id)
         {
             var model = ControllerServices.GetBoardDetail(id);
+            if (model is null)
+            {
+                return NotFound();
+            }
+
             return Ok(model);
         }
 

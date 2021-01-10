@@ -9,11 +9,11 @@ namespace SimpleBoards.Core.Commands
 
         Task AssignIssue(int issueId, string assigneeId);
 
-        Task SetIssueAsInProgress(int issueId);
+        Task StartWorkOnIssue(int issueId);
 
-        Task SetIssueAsClosed(int issueId);
+        Task CloseIssue(int issueId);
 
-        Task SetIssueAsDone(int issueId);
+        Task MarkIssueAsDone(int issueId);
 
         Task RejectIssue(int issueId);
 

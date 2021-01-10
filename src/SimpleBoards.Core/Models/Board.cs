@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SimpleBoards.Core.Models
 {
@@ -14,10 +15,15 @@ namespace SimpleBoards.Core.Models
         public DateTime? DeletedAt { get; protected set; }
 
         public DateTime CreatedAt { get; protected set; }
+
+        public virtual ICollection<Issue> Issues { get; protected set; }
         #endregion
 
         #region Constructor
-        protected Board() { }
+        protected Board() 
+        { 
+            Issues = new HashSet<Issue>();
+        }
         #endregion
 
         #region Factory method

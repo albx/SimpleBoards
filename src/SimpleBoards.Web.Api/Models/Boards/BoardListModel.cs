@@ -21,6 +21,8 @@ namespace SimpleBoards.Web.Api.Models.Boards
             public int NumberOfIssuesInProgress { get; set; }
 
             public int NumberOfIssuesDone { get; set; }
+
+            public int NumberOfIssueInTesting { get; set; }
         }
     }
 }
