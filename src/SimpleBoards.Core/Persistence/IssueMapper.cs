@@ -21,6 +21,7 @@ namespace SimpleBoards.Core.Persistence
             builder
                 .HasMany(i => i.Comments)
                 .WithOne()
+                .HasForeignKey(c => c.IssueId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder

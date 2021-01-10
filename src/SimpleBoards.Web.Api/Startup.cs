@@ -38,7 +38,8 @@ namespace SimpleBoards.Web.Api
 
             services
                 .AddScoped<BoardsControllerServices>()
-                .AddScoped<IssuesControllerServices>();
+                .AddScoped<IssuesControllerServices>()
+                .AddScoped<CommentsControllerServices>();
             
             services
                 .AddControllers()

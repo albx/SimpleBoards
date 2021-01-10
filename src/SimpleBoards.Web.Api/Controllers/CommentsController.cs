@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SimpleBoards.Web.Api.Models.Comments;
+using SimpleBoards.Web.Api.Services;
 
 namespace SimpleBoards.Web.Api.Controllers
 {
@@ -7,27 +9,43 @@ namespace SimpleBoards.Web.Api.Controllers
     [Route("api/issues/{issueId}/[controller]")]
     public class CommentsController : ControllerBase
     {
+        public CommentsControllerServices ControllerServices { get; }
+
+        public CommentsController(CommentsControllerServices controllerServices)
+        {
+            ControllerServices = controllerServices ?? throw new System.ArgumentNullException(nameof(controllerServices));
+        }
+
         [HttpGet]
         public IActionResult GetComments(int issueId)
         {
-            return Ok();
+            var model = ControllerServices.GetComments(issueId);
+            return Ok(model);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetCommentDetail(int issueId, int id)
         {
-            return Ok();
+            var model = ControllerServices.GetCommentDetail(issueId, id);
+            if (model is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewComment(int issueId)
+        public async Task<IActionResult> AddNewComment(int issueId, [FromBody]NewCommentModel model)
         {
+            await ControllerServices.AddNewComment(issueId, model);
             return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int issueId, int id)
         {
+            await ControllerServices.DeleteComment(issueId, id);
             return Ok();
         }
     }

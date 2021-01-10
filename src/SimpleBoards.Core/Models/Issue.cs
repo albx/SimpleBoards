@@ -108,7 +108,8 @@ namespace SimpleBoards.Core.Models
             var comment = new Comment
             {
                 User = user,
-                Text = text
+                Text = text,
+                CommentedAt = DateTime.UtcNow
             };
 
             Comments.Add(comment);
