@@ -36,7 +36,9 @@ namespace SimpleBoards.Web.Api
                 .AddScoped<IBoardCommands, BoardCommands>()
                 .AddScoped<IIssueCommands, IssueCommands>();
 
-            services.AddScoped<BoardsControllerServices>();
+            services
+                .AddScoped<BoardsControllerServices>()
+                .AddScoped<IssuesControllerServices>();
             
             services
                 .AddControllers()

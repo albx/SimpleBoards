@@ -57,7 +57,7 @@ namespace SimpleBoards.Web.Api.Controllers
             return Ok();
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/restore")]
         public async Task<IActionResult> RestoreBoard(int id)
         {
             await ControllerServices.RestoreBoard(id);

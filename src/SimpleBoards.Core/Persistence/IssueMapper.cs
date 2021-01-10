@@ -15,7 +15,8 @@ namespace SimpleBoards.Core.Persistence
 
             builder
                 .HasOne(i => i.Board)
-                .WithMany(b => b.Issues);
+                .WithMany(b => b.Issues)
+                .HasForeignKey(i => i.BoardId);
 
             builder
                 .HasMany(i => i.Comments)

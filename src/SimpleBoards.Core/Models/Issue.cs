@@ -19,6 +19,8 @@ namespace SimpleBoards.Core.Models
 
         public virtual Board Board { get; protected set; }
 
+        public virtual int BoardId { get; protected set; }
+
         public virtual User Reporter { get; protected set; }
 
         public virtual User Assignee { get; protected set; }
@@ -81,7 +83,7 @@ namespace SimpleBoards.Core.Models
 
         public void Close() => State = IssueState.Closed;
 
-        public void MarkAsDone() => State = IssueState.Done;
+        public void Complete() => State = IssueState.Done;
 
         public void Reject() => State = IssueState.ToDo;
 

@@ -79,7 +79,7 @@ namespace SimpleBoards.Core.Commands
             await Context.SaveChangesAsync();
         }
 
-        public async Task OpenNewIssue(int boardId, string reporterId, Issue.IssueType type, string title, string description)
+        public async Task<int> OpenNewIssue(int boardId, string reporterId, Issue.IssueType type, string title, string description)
         {
             var board = Context.Boards.SingleOrDefault(b => b.Id == boardId);
             if (board is null)
@@ -97,6 +97,8 @@ namespace SimpleBoards.Core.Commands
             Context.Add(issue);
 
             await Context.SaveChangesAsync();
+
+            return issue.Id;
         }
 
         public async Task RejectIssue(int issueId)
@@ -138,7 +140,7 @@ namespace SimpleBoards.Core.Commands
             await Context.SaveChangesAsync();
         }
 
-        public async Task MarkIssueAsDone(int issueId)
+        public async Task CompleteIssue(int issueId)
         {
             var issue = Context.Issues.SingleOrDefault(i => i.Id == issueId);
             if (issue is null)
@@ -146,7 +148,7 @@ namespace SimpleBoards.Core.Commands
                 throw new ArgumentOutOfRangeException(nameof(issueId));
             }
 
-            issue.MarkAsDone();
+            issue.Complete();
             await Context.SaveChangesAsync();
         }
 
