@@ -19,8 +19,7 @@ namespace SimpleBoards.Identity
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                new ApiScope("scope1"),
-                new ApiScope("scope2"),
+                new ApiScope("simpleboards.web.api", "SimpleBoards Web API"),
             };
 
         public static IEnumerable<Client> Clients =>
@@ -35,7 +34,7 @@ namespace SimpleBoards.Identity
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
 
-                    AllowedScopes = { "scope1" }
+                    AllowedScopes = { "simpleboards.web.api" }
                 },
 
                 // interactive client using code flow + pkce
@@ -51,7 +50,7 @@ namespace SimpleBoards.Identity
                     PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "scope2" }
+                    AllowedScopes = { "openid", "profile", "simpleboards.web.api" }
                 },
             };
     }
