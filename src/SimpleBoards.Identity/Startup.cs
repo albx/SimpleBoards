@@ -3,8 +3,8 @@
 
 
 using IdentityServer4;
-using SimpleBoards.Identity.Data;
-using SimpleBoards.Identity.Models;
+// using SimpleBoards.Identity.Data;
+// using SimpleBoards.Identity.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SimpleBoards.Core.Identity;
+using SimpleBoards.Core.Identity.Data;
+using SimpleBoards.Core.Identity.Models;
 
 namespace SimpleBoards.Identity
 {
@@ -31,13 +34,11 @@ namespace SimpleBoards.Identity
             services.AddControllersWithViews();
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(this.GetType().Assembly.GetName().Name)));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddSimpleBoardsIdentity();
 
             var builder = services.AddIdentityServer(options =>
             {

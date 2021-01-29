@@ -21,4 +21,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleBoards.Core.Identity\SimpleBoards.Core.Identity.csproj" />
+  </ItemGroup>
 </Project>

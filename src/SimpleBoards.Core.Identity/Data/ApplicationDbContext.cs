@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SimpleBoards.Identity.Models;
+using SimpleBoards.Core.Identity.Models;
 
-namespace SimpleBoards.Identity.Data
+namespace SimpleBoards.Core.Identity.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
