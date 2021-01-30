@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "SimpleBoards.Core";
+
+package users;
+
+service Users {
+  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse); 
+}
+
+message RegisterUserRequest {
+  string userName = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message RegisterUserResponse {
+  string userId = 1;
+}

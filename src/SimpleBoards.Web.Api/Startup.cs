@@ -12,6 +12,8 @@ using SimpleBoards.Web.Api.Services;
 using SimpleBoards.Core.ReadModels;
 using SimpleBoards.Core.Commands;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SimpleBoards.Core;
+using System;
 
 namespace SimpleBoards.Web.Api
 {
@@ -41,15 +43,22 @@ namespace SimpleBoards.Web.Api
                     options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
                 });
 
+            services.AddGrpcClient<Users.UsersClient>(options => 
+            {
+                options.Address = new Uri("https://localhost:5011");
+            });
+
             services
                 .AddScoped<IDatabase, Database>()
                 .AddScoped<IBoardCommands, BoardCommands>()
-                .AddScoped<IIssueCommands, IssueCommands>();
+                .AddScoped<IIssueCommands, IssueCommands>()
+                .AddScoped<IUserCommands, UserCommands>();
 
             services
                 .AddScoped<BoardsControllerServices>()
                 .AddScoped<IssuesControllerServices>()
-                .AddScoped<CommentsControllerServices>();
+                .AddScoped<CommentsControllerServices>()
+                .AddScoped<UsersControllerServices>();
             
             services
                 .AddControllers()
