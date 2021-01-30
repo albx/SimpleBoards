@@ -59,6 +59,16 @@ namespace SimpleBoards.Web.Api
                 .AddScoped<IssuesControllerServices>()
                 .AddScoped<CommentsControllerServices>()
                 .AddScoped<UsersControllerServices>();
+
+            services.AddCors(options => 
+            {
+                options.AddPolicy("Client", policy => 
+                {
+                    policy.WithOrigins("https://localhost:7001")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             
             services
                 .AddControllers()
@@ -84,6 +94,7 @@ namespace SimpleBoards.Web.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("Client");
 
             app.UseRouting();
 
