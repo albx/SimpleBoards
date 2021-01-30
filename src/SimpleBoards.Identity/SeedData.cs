@@ -6,12 +6,13 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using IdentityModel;
-using SimpleBoards.Identity.Data;
-using SimpleBoards.Identity.Models;
+using SimpleBoards.Core.Identity.Data;
+using SimpleBoards.Core.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using SimpleBoards.Core.Identity;
 
 namespace SimpleBoards.Identity
 {
@@ -22,11 +23,9 @@ namespace SimpleBoards.Identity
             var services = new ServiceCollection();
             services.AddLogging();
             services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(connectionString));
+               options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name)));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddSimpleBoardsIdentity();
 
             using (var serviceProvider = services.BuildServiceProvider())
             {
