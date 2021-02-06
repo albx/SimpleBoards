@@ -1,4 +1,7 @@
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using SimpleBoards.Web.Models.Boards;
 
 namespace SimpleBoards.Web.App.Http
 {
@@ -10,5 +13,9 @@ namespace SimpleBoards.Web.App.Http
         {
             Http = http;
         }
+
+        public Task<BoardListModel> GetBoardsList() => Http.GetFromJsonAsync<BoardListModel>("api/boards");
+
+        public Task CreateNewBoard(BoardModel model) => Http.PostAsJsonAsync("api/boards", model);
     }
 }
