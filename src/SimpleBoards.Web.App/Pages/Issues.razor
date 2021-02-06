@@ -1,0 +1,110 @@
+@page "/boards/{boardId:int}/issues"
+@attribute [Authorize]
+@inject BoardsHttpClient BoardsClient
+@inject IssuesHttpClient IssuesClient
+@using SimpleBoards.Core.Models;
+@using System.Linq;
+
+@if (viewModel.Board is null || viewModel.Issues is null)
+{
+    <h4>Loading...</h4>
+}
+else 
+{
+    <div class="row">
+        <div class="col">
+            <h2>@viewModel.Board?.Name</h2>
+        </div>
+        <div class="col-auto">
+            <a href="boards/@BoardId/issues/new" class="btn btn-primary">New issue</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-issue">
+            <h5>New</h5>
+            <hr />
+            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.New))
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@issue.Title</h5>
+                        <p class="card-text">@issue.Type</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col col-issue">
+            <h5>To do</h5>
+            <hr />
+            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.ToDo))
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@issue.Title</h5>
+                        <p class="card-text">@issue.Type</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col col-issue">
+            <h5>In progress</h5>
+            <hr />
+            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.InProgress))
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@issue.Title</h5>
+                        <p class="card-text">@issue.Type</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col col-issue">
+            <h5>Testing</h5>
+            <hr />
+            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.Testing))
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@issue.Title</h5>
+                        <p class="card-text">@issue.Type</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col col-issue">
+            <h5>Done</h5>
+            <hr />
+            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.Done))
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@issue.Title</h5>
+                        <p class="card-text">@issue.Type</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+
+    private IssuesViewModel viewModel = new();
+
+    public class IssuesViewModel
+    {
+        public BoardModel Board { get; set; }
+
+        public IssuesListModel Issues { get; set; }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        viewModel.Board = await BoardsClient.GetBoardDetail(BoardId);
+        viewModel.Issues = await IssuesClient.GetIssuesList(BoardId);
+    }
+}

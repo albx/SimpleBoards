@@ -1,0 +1,29 @@
+@page "/boards/{boardId:int}/issues/new"
+@attribute [Authorize]
+
+<div class="row">
+    <div class="col">
+        <h2>New issue</h2>
+    </div>
+    <div class="col-auto">
+        <a href="boards/@BoardId/issues" class="btn btn-primary">Back</a>
+    </div>
+</div>
+<div class="row">
+    <EditForm Model="@viewModel">
+        <DataAnnotationsValidator />
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+
+    private NewIssueModel viewModel = new();
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        viewModel.BoardId = BoardId;
+    }
+}

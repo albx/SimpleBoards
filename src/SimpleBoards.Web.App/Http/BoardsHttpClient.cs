@@ -17,5 +17,7 @@ namespace SimpleBoards.Web.App.Http
         public Task<BoardListModel> GetBoardsList() => Http.GetFromJsonAsync<BoardListModel>("api/boards");
 
         public Task CreateNewBoard(BoardModel model) => Http.PostAsJsonAsync("api/boards", model);
+
+        public Task<BoardModel> GetBoardDetail(int boardId) => Http.GetFromJsonAsync<BoardModel>($"api/boards/{boardId}");
     }
 }

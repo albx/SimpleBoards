@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace SimpleBoards.Web.Api.Controllers
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize]
     [Route("api/[controller]")]
     public class BoardsController : ControllerBase
     {

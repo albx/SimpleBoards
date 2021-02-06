@@ -6,31 +6,7 @@
     <NewBoard OnBoardCreated="ReloadBoards" />
 </div>
 <div class="row">
-    @if (viewModel.Boards is null)
-    {
-        <div class="col">
-            <h4>Loading...</h4>
-        </div>
-    }
-    else {
-        foreach (var board in viewModel.Boards)
-        {
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">@board.Name</div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">@board.TotalNumberOfIssues Issues</li>
-                        <li class="list-group-item">@board.NumberOfNewIssues new issues</li>
-                        <li class="list-group-item">@board.NumberOfIssuesToDo issues assigned</li>
-                        <li class="list-group-item">@board.NumberOfIssuesInProgress issues in progress</li>
-                        <li class="list-group-item">@board.NumberOfIssueInTesting issues to test</li>
-                        <li class="list-group-item">@board.NumberOfIssuesDone issues completed</li>
-                    </ul>
-                    <a href="#" class="btn btn-primary">View</a>
-                </div>
-            </div>
-        }
-    }
+    <BoardList Boards="viewModel.Boards" />
 </div>
 
 @code {
