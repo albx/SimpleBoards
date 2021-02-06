@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SimpleBoards.Core.Commands;
 using SimpleBoards.Core.Models;
 using SimpleBoards.Core.ReadModels;
-using SimpleBoards.Web.Api.Models.Boards;
+using SimpleBoards.Web.Models.Boards;
 
 namespace SimpleBoards.Web.Api.Services
 {

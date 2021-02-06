@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SimpleBoards.Web.Api.Models.Boards
+namespace SimpleBoards.Web.Models.Boards
 {
     public class BoardListModel
     {

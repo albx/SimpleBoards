@@ -1,7 +1,7 @@
 using System;
 using SimpleBoards.Core.Models;
 
-namespace SimpleBoards.Web.Api.Models.Issues
+namespace SimpleBoards.Web.Models.Issues
 {
     public class IssueDetailModel
     {

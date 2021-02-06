@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SimpleBoards.Web.Api.Models.Users;
+using SimpleBoards.Web.Models.Users;
 using SimpleBoards.Web.Api.Services;
 
 namespace SimpleBoards.Web.Api.Controllers

@@ -1,6 +1,6 @@
 using System;
 
-namespace SimpleBoards.Web.Api.Models.Comments
+namespace SimpleBoards.Web.Models.Comments
 {
     public class CommentModel
     {

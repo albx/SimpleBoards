@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SimpleBoards.Web.Api.Models.Comments;
+using SimpleBoards.Web.Models.Comments;
 using SimpleBoards.Web.Api.Services;
 
 namespace SimpleBoards.Web.Api.Controllers

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SimpleBoards.Web.Api.Models.Issues;
+using SimpleBoards.Web.Models.Issues;
 using SimpleBoards.Web.Api.Services;
 
 namespace SimpleBoards.Web.Api.Controllers

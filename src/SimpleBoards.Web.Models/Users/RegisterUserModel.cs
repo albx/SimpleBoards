@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SimpleBoards.Web.Api.Models.Users
+namespace SimpleBoards.Web.Models.Users
 {
     public class RegisterUserModel
     {

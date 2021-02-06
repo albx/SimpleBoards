@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SimpleBoards.Core.Commands;
 using SimpleBoards.Core.ReadModels;
-using SimpleBoards.Web.Api.Models.Comments;
+using SimpleBoards.Web.Models.Comments;
 
 namespace SimpleBoards.Web.Api.Services
 {

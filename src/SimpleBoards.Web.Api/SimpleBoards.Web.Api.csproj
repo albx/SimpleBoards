@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SimpleBoards.Persistence.SqlServer\SimpleBoards.Persistence.SqlServer.csproj" />
+    <ProjectReference Include="..\SimpleBoards.Web.Models\SimpleBoards.Web.Models.csproj" />
   </ItemGroup>
 
 </Project>

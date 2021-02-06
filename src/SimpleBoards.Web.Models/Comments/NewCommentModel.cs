@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SimpleBoards.Web.Api.Models.Comments
+namespace SimpleBoards.Web.Models.Comments
 {
     public class NewCommentModel
     {

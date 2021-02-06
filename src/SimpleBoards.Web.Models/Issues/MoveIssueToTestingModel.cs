@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SimpleBoards.Web.Api.Models.Issues
+namespace SimpleBoards.Web.Models.Issues
 {
     public class MoveIssueToTestingModel
     {
