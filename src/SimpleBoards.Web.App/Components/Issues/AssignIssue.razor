@@ -1,0 +1,35 @@
+<EditForm Model="viewModel" class="col-md-12" role="form" OnValidSubmit="AssignIssueToUser">
+    <div class="form-group">
+        <label for="@nameof(viewModel.AssigneeId)">Assign to</label>
+        <InputSelect @bind-Value="viewModel.AssigneeId" class="form-control">
+            <option>Choose a user</option>
+            @foreach (var user in Users)
+            {
+                <option value="@user.Id">@user.UserName</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary" @onclick="Clear">Clear</button>
+        <button type="submit" class="btn btn-primary">Assign</button>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public IEnumerable<UsersListModel.UserListItem> Users { get; set; }
+
+    [Parameter]
+    public EventCallback<AssignIssueModel> OnUserAssigned { get; set; }
+
+    private AssignIssueModel viewModel = new();
+
+    async Task AssignIssueToUser() 
+    {
+        await OnUserAssigned.InvokeAsync(viewModel);
+        viewModel = new();
+    }
+
+    void Clear() => viewModel = new();
+}

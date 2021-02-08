@@ -1,4 +1,7 @@
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using SimpleBoards.Web.Models.Users;
 
 namespace SimpleBoards.Web.App.Http
 {
@@ -10,5 +13,7 @@ namespace SimpleBoards.Web.App.Http
         {
             Http = http;
         }
+
+        public Task<UsersListModel> GetUsers() => Http.GetFromJsonAsync<UsersListModel>("api/users");
     }
 }

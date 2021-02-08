@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @inject BoardsHttpClient BoardsClient
 @inject IssuesHttpClient IssuesClient
+@inject UsersHttpClient UsersClient
 @using SimpleBoards.Core.Models;
 @using System.Linq;
 
@@ -25,12 +26,12 @@ else
             <hr />
             @foreach (var issue in viewModel.NewIssues)
             {
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@issue.Title</h5>
-                        <p class="card-text">@issue.Type</p>
-                    </div>
-                </div>
+                <IssueCard Item="issue">
+                    <IssueActions>
+                        <AssignIssue Users="users.Users"
+                                     OnUserAssigned="(model) => AssignIssueToUser(issue.Id, model)"/>
+                    </IssueActions>
+                </IssueCard>
             }
         </div>
         <div class="col col-issue">
@@ -38,12 +39,7 @@ else
             <hr />
             @foreach (var issue in viewModel.AssignedIssues)
             {
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@issue.Title</h5>
-                        <p class="card-text">@issue.Type</p>
-                    </div>
-                </div>
+                <IssueCard Item="issue" />
             }
         </div>
         <div class="col col-issue">
@@ -51,12 +47,7 @@ else
             <hr />
             @foreach (var issue in viewModel.InProgressIssues)
             {
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@issue.Title</h5>
-                        <p class="card-text">@issue.Type</p>
-                    </div>
-                </div>
+                <IssueCard Item="issue" />
             }
         </div>
         <div class="col col-issue">
@@ -64,12 +55,7 @@ else
             <hr />
             @foreach (var issue in viewModel.TestingIssues)
             {
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@issue.Title</h5>
-                        <p class="card-text">@issue.Type</p>
-                    </div>
-                </div>
+                <IssueCard Item="issue" />
             }
         </div>
         <div class="col col-issue">
@@ -77,12 +63,7 @@ else
             <hr />
             @foreach (var issue in viewModel.CompletedIssues)
             {
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@issue.Title</h5>
-                        <p class="card-text">@issue.Type</p>
-                    </div>
-                </div>
+                <IssueCard Item="issue" />
             }
         </div>
     </div>
@@ -93,6 +74,8 @@ else
     public int BoardId { get; set; }
 
     private IssuesViewModel viewModel = new();
+
+    private UsersListModel users = new();
 
     public class IssuesViewModel
     {
@@ -115,11 +98,33 @@ else
         viewModel.Board = await BoardsClient.GetBoardDetail(BoardId);
 
         var issues = await IssuesClient.GetIssuesList(BoardId);
+        users = await UsersClient.GetUsers();
 
         viewModel.NewIssues = issues.Issues.Where(i => i.State == Issue.IssueState.New.ToString()).ToList();
         viewModel.AssignedIssues = issues.Issues.Where(i => i.State == Issue.IssueState.ToDo.ToString()).ToList();
         viewModel.InProgressIssues = issues.Issues.Where(i => i.State == Issue.IssueState.InProgress.ToString()).ToList();
         viewModel.TestingIssues = issues.Issues.Where(i => i.State == Issue.IssueState.Testing.ToString()).ToList();
         viewModel.CompletedIssues = issues.Issues.Where(i => i.State == Issue.IssueState.Done.ToString()).ToList();
+    }
+
+    async Task AssignIssueToUser(int issueId, AssignIssueModel model)
+    {
+        try
+        {
+            await IssuesClient.AssignIssue(issueId, model);
+            var issue = viewModel.NewIssues.SingleOrDefault(i => i.Id == issueId);
+            if (issue is not null)
+            {
+                viewModel.NewIssues.Remove(issue);
+
+                issue.Assignee = users.Users.FirstOrDefault(u => u.Id == model.AssigneeId)?.UserName;
+                viewModel.AssignedIssues.Add(issue);
+            }
+        }
+        catch (ApplicationException ex)
+        {
+            Console.WriteLine(ex);
+        }
+        
     }
 }

@@ -1,0 +1,25 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Item.Title</h5>
+        <p class="card-text">
+            <ul class="list-unstyled">
+                <li><strong>Reporter</strong>: @(Item.Reporter ?? "")</li>
+                <li><strong>Assignee</strong>: @(Item.Assignee ?? "")</li>
+                <li><strong>Tester</strong>: @(Item.Tester ?? "")</li>
+            </ul>
+        </p>
+        <small class="card-text">@Item.Type</small>
+        <hr/>
+        <div class="card-text">
+            @IssueActions
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public IssuesListModel.IssueListItem Item { get; set; }
+
+    [Parameter]
+    public RenderFragment IssueActions { get; set; }
+}

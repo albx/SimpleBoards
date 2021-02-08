@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -17,5 +18,14 @@ namespace SimpleBoards.Web.App.Http
         public Task<IssuesListModel> GetIssuesList(int boardId) => Http.GetFromJsonAsync<IssuesListModel>($"api/issues?boardId={boardId}");
 
         public Task OpenNewIssue(NewIssueModel model) => Http.PostAsJsonAsync("api/issues", model);
+
+        public async Task AssignIssue(int issueId, AssignIssueModel model)
+        {
+            var response = await Http.PatchAsync($"api/issues/{issueId}/assign", JsonContent.Create(model));
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException("Could not assign issue");
+            }
+        }
     }
 }

@@ -24,6 +24,9 @@ namespace SimpleBoards.Web.Api.Services
         {
             var issues = Database.Issues
                 .Include(i => i.Board)
+                .Include(i => i.Reporter)
+                .Include(i => i.Assignee)
+                .Include(i => i.Tester)
                 .Where(i => i.BoardId == boardId)
                 .Where(i => i.State != Issue.IssueState.Closed)
                 .Select(i => new IssuesListModel.IssueListItem
@@ -32,7 +35,10 @@ namespace SimpleBoards.Web.Api.Services
                     CreatedAt = i.CreatedAt,
                     State = i.State.ToString(),
                     Title = i.Title,
-                    Type = i.Type.ToString()
+                    Type = i.Type.ToString(),
+                    Reporter = i.Reporter.UserName,
+                    Assignee = i.Assignee == null ? null : i.Assignee.UserName,
+                    Tester = i.Tester == null ? null : i.Tester.UserName
                 }).ToArray();
 
             var model = new IssuesListModel

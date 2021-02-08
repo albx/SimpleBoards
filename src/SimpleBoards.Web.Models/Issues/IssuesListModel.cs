@@ -18,6 +18,12 @@ namespace SimpleBoards.Web.Models.Issues
 
             public string State { get; set; }
 
+            public string Reporter { get; set; }
+
+            public string Assignee { get; set; }
+
+            public string Tester { get; set; }
+
             public DateTime CreatedAt { get; set; }
         }
     }
