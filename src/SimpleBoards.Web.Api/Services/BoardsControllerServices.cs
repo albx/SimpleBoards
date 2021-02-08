@@ -33,7 +33,8 @@ namespace SimpleBoards.Web.Api.Services
                     NumberOfNewIssues = b.Issues.Count(i => i.State == Issue.IssueState.New),
                     NumberOfIssuesInProgress = b.Issues.Count(i => i.State == Issue.IssueState.InProgress),
                     NumberOfIssuesToDo = b.Issues.Count(i => i.State == Issue.IssueState.ToDo),
-                    NumberOfIssueInTesting = b.Issues.Count(i => i.State == Issue.IssueState.Testing)
+                    NumberOfIssueInTesting = b.Issues.Count(i => i.State == Issue.IssueState.Testing),
+                    TotalNumberOfIssues = b.Issues.Count()
                 }).ToArray();
                 
             var model = new BoardListModel

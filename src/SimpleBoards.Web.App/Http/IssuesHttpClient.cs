@@ -15,5 +15,7 @@ namespace SimpleBoards.Web.App.Http
         }
 
         public Task<IssuesListModel> GetIssuesList(int boardId) => Http.GetFromJsonAsync<IssuesListModel>($"api/issues?boardId={boardId}");
+
+        public Task OpenNewIssue(NewIssueModel model) => Http.PostAsJsonAsync("api/issues", model);
     }
 }

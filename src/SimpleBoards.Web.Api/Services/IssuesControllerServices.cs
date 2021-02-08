@@ -30,9 +30,9 @@ namespace SimpleBoards.Web.Api.Services
                 {
                     Id = i.Id,
                     CreatedAt = i.CreatedAt,
-                    State = i.State,
+                    State = i.State.ToString(),
                     Title = i.Title,
-                    Type = i.Type
+                    Type = i.Type.ToString()
                 }).ToArray();
 
             var model = new IssuesListModel

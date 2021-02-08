@@ -71,6 +71,12 @@
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
+        },
+        {
+            "name": "SimpleBoards WebApp Launch",
+            "type": "blazorwasm",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/SimpleBoards.Web.App"
         }
     ]
 }

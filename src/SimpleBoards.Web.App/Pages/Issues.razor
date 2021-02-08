@@ -5,7 +5,7 @@
 @using SimpleBoards.Core.Models;
 @using System.Linq;
 
-@if (viewModel.Board is null || viewModel.Issues is null)
+@if (viewModel.Board is null)
 {
     <h4>Loading...</h4>
 }
@@ -23,7 +23,7 @@ else
         <div class="col col-issue">
             <h5>New</h5>
             <hr />
-            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.New))
+            @foreach (var issue in viewModel.NewIssues)
             {
                 <div class="card">
                     <div class="card-body">
@@ -36,7 +36,7 @@ else
         <div class="col col-issue">
             <h5>To do</h5>
             <hr />
-            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.ToDo))
+            @foreach (var issue in viewModel.AssignedIssues)
             {
                 <div class="card">
                     <div class="card-body">
@@ -49,7 +49,7 @@ else
         <div class="col col-issue">
             <h5>In progress</h5>
             <hr />
-            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.InProgress))
+            @foreach (var issue in viewModel.InProgressIssues)
             {
                 <div class="card">
                     <div class="card-body">
@@ -62,7 +62,7 @@ else
         <div class="col col-issue">
             <h5>Testing</h5>
             <hr />
-            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.Testing))
+            @foreach (var issue in viewModel.TestingIssues)
             {
                 <div class="card">
                     <div class="card-body">
@@ -75,7 +75,7 @@ else
         <div class="col col-issue">
             <h5>Done</h5>
             <hr />
-            @foreach (var issue in viewModel.Issues.Issues.Where(i => i.State == Issue.IssueState.Done))
+            @foreach (var issue in viewModel.CompletedIssues)
             {
                 <div class="card">
                     <div class="card-body">
@@ -98,13 +98,28 @@ else
     {
         public BoardModel Board { get; set; }
 
-        public IssuesListModel Issues { get; set; }
+        public List<IssuesListModel.IssueListItem> NewIssues { get; set; } = new();
+        
+        public List<IssuesListModel.IssueListItem> AssignedIssues { get; set; } = new();
+
+        public List<IssuesListModel.IssueListItem> InProgressIssues { get; set; } = new();
+
+        public List<IssuesListModel.IssueListItem> TestingIssues { get; set; } = new();
+
+        public List<IssuesListModel.IssueListItem> CompletedIssues { get; set; } = new();
     }
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
         viewModel.Board = await BoardsClient.GetBoardDetail(BoardId);
-        viewModel.Issues = await IssuesClient.GetIssuesList(BoardId);
+
+        var issues = await IssuesClient.GetIssuesList(BoardId);
+
+        viewModel.NewIssues = issues.Issues.Where(i => i.State == Issue.IssueState.New.ToString()).ToList();
+        viewModel.AssignedIssues = issues.Issues.Where(i => i.State == Issue.IssueState.ToDo.ToString()).ToList();
+        viewModel.InProgressIssues = issues.Issues.Where(i => i.State == Issue.IssueState.InProgress.ToString()).ToList();
+        viewModel.TestingIssues = issues.Issues.Where(i => i.State == Issue.IssueState.Testing.ToString()).ToList();
+        viewModel.CompletedIssues = issues.Issues.Where(i => i.State == Issue.IssueState.Done.ToString()).ToList();
     }
 }
