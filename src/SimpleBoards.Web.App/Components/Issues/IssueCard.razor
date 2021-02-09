@@ -1,6 +1,8 @@
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">@Item.Title</h5>
+        <h5 class="card-title">
+            <a href="issues/@Item.Id">@Item.Title</a>
+        </h5>
         <p class="card-text">
             <ul class="list-unstyled">
                 <li><strong>Reporter</strong>: @(Item.Reporter ?? "")</li>
@@ -17,6 +19,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public int BoardId { get; set; }
+
     [Parameter]
     public IssuesListModel.IssueListItem Item { get; set; }
 

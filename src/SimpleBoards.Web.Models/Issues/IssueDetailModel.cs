@@ -11,9 +11,9 @@ namespace SimpleBoards.Web.Models.Issues
 
         public string Description { get; set; }
 
-        public Issue.IssueType Type { get; set; }
+        public string Type { get; set; }
 
-        public Issue.IssueState State { get; set; }
+        public string State { get; set; }
 
         public BoardDescriptor Board { get; set; }
 

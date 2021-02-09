@@ -10,8 +10,9 @@
 {
     <h4>Loading...</h4>
 }
-else 
+else
 {
+<CascadingValue Value="@BoardId">
     <div class="row">
         <div class="col">
             <h2>@viewModel.Board?.Name</h2>
@@ -20,6 +21,7 @@ else
             <a href="boards/@BoardId/issues/new" class="btn btn-primary">New issue</a>
         </div>
     </div>
+    <hr />
     <div class="row">
         <div class="col col-issue">
             <h5>New</h5>
@@ -30,11 +32,11 @@ else
                     <IssueActions>
                         <div>
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-danger btn-sm" @onclick="() => CloseIssue(issue)">Close</button>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    @onclick="() => CloseIssue(issue)">Close</button>
                             </div>
                         </div>
-                        <AssignIssue Users="users.Users"
-                                     OnUserAssigned="(model) => AssignIssueToUser(issue, model)"/>
+                        <AssignIssue Users="users.Users" OnUserAssigned="(model) => AssignIssueToUser(issue, model)" />
                     </IssueActions>
                 </IssueCard>
             }
@@ -48,8 +50,10 @@ else
                     <IssueActions>
                         <div>
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-primary btn-sm" @onclick="() => StartIssue(issue)">Start</button>
-                                <button type="button" class="btn btn-danger btn-sm" @onclick="() => CloseIssue(issue)">Close</button>
+                                <button type="button" class="btn btn-primary btn-sm"
+                                    @onclick="() => StartIssue(issue)">Start</button>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    @onclick="() => CloseIssue(issue)">Close</button>
                             </div>
                         </div>
                     </IssueActions>
@@ -65,12 +69,12 @@ else
                     <IssueActions>
                         <div>
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-danger btn-sm" @onclick="() => CloseIssue(issue)">Close</button>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    @onclick="() => CloseIssue(issue)">Close</button>
                             </div>
                         </div>
-                        <TestIssue Users="users.Users"
-                                   Tester="@issue.Tester"
-                                   OnTesterAssigned="(model) => MoveIssueToTesting(issue, model)"/>
+                        <TestIssue Users="users.Users" Tester="@issue.Tester"
+                            OnTesterAssigned="(model) => MoveIssueToTesting(issue, model)" />
                     </IssueActions>
                 </IssueCard>
             }
@@ -84,9 +88,12 @@ else
                     <IssueActions>
                         <div>
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-success btn-sm" @onclick="() => CompleteIssue(issue)">Done</button>
-                                <button type="button" class="btn btn-warning btn-sm" @onclick="() => RejectIssue(issue)">Reject</button>
-                                <button type="button" class="btn btn-danger btn-sm" @onclick="() => CloseIssue(issue)">Close</button>
+                                <button type="button" class="btn btn-success btn-sm"
+                                    @onclick="() => CompleteIssue(issue)">Done</button>
+                                <button type="button" class="btn btn-warning btn-sm"
+                                    @onclick="() => RejectIssue(issue)">Reject</button>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    @onclick="() => CloseIssue(issue)">Close</button>
                             </div>
                         </div>
                     </IssueActions>
@@ -102,6 +109,7 @@ else
             }
         </div>
     </div>
+</CascadingValue>
 }
 
 @code {
@@ -117,7 +125,7 @@ else
         public BoardModel Board { get; set; }
 
         public List<IssuesListModel.IssueListItem> NewIssues { get; set; } = new();
-        
+
         public List<IssuesListModel.IssueListItem> AssignedIssues { get; set; } = new();
 
         public List<IssuesListModel.IssueListItem> InProgressIssues { get; set; } = new();
@@ -147,7 +155,7 @@ else
         try
         {
             await IssuesClient.AssignIssue(issue.Id, model);
-            
+
             viewModel.NewIssues.Remove(issue);
 
             issue.State = Issue.IssueState.ToDo.ToString();
@@ -194,9 +202,9 @@ else
         try
         {
             await IssuesClient.StartIssue(issue.Id);
-            
+
             viewModel.AssignedIssues.Remove(issue);
-            
+
             issue.State = Issue.IssueState.InProgress.ToString();
             viewModel.InProgressIssues.Add(issue);
         }
@@ -211,12 +219,12 @@ else
         try
         {
             await IssuesClient.MoveIssueToTesting(issue.Id, model);
-            
+
             viewModel.InProgressIssues.Remove(issue);
 
             issue.Tester = users.Users.FirstOrDefault(u => u.Id == model.TesterId)?.UserName;
             issue.State = Issue.IssueState.Testing.ToString();
-            
+
             viewModel.TestingIssues.Add(issue);
         }
         catch (ApplicationException ex)

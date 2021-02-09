@@ -65,5 +65,7 @@ namespace SimpleBoards.Web.App.Http
                 throw new ApplicationException("Could not complete issue");
             }
         }
+
+        public Task<IssueDetailModel> GetIssueDetail(int issueId) => Http.GetFromJsonAsync<IssueDetailModel>($"api/issues/{issueId}");
     }
 }

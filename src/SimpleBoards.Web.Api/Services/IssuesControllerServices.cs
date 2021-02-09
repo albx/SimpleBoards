@@ -83,14 +83,14 @@ namespace SimpleBoards.Web.Api.Services
                     Id = issue.Reporter.Id,
                     UserName = issue.Reporter.UserName
                 },
-                State = issue.State,
+                State = issue.State.ToString(),
                 Tester = issue.Tester is null ? null : new IssueDetailModel.UserDescriptor
                 {
                     Id = issue.Tester.Id,
                     UserName = issue.Tester.UserName
                 },
                 Title = issue.Title,
-                Type = issue.Type
+                Type = issue.Type.ToString()
             };
 
             return model;

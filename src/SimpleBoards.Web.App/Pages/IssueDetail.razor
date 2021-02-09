@@ -1,0 +1,77 @@
+@page "/issues/{issueId:int}"
+@attribute [Authorize]
+@inject IssuesHttpClient IssuesClient
+
+@if (viewModel is null)
+{
+    <h4>Loading...</h4>
+}
+else
+{
+    <div class="row">
+        <div class="col">
+            <h2>@viewModel.Title</h2>
+        </div>
+        <div class="col-auto">
+            <a href="boards/@viewModel.Board.Id/issues" class="btn btn-primary">Back</a>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row form-group">
+                <label class="col-md-2"><strong>Title</strong></label>
+                <div class="col-md-10">@viewModel.Title</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-2"><strong>Type</strong></label>
+                <div class="col-md-10">@viewModel.Type</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-2"><strong>State</strong></label>
+                <div class="col-md-10">@viewModel.State</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-2"><strong>Board</strong></label>
+                <div class="col-md-10">@viewModel.Board.Name</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-2"><strong>Reporter</strong></label>
+                <div class="col-md-10">@(viewModel.Reporter.UserName ?? "-")</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-2"><strong>Assignee</strong></label>
+                <div class="col-md-10">@(viewModel.Assignee?.UserName ?? "Unassigned")</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-2"><strong>Tester</strong></label>
+                <div class="col-md-10">@(viewModel.Tester?.UserName ?? "-")</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-2"><strong>Created at</strong></label>
+                <div class="col-md-10">@viewModel.CreatedAt.ToShortDateString()</div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(viewModel.Description))
+            {
+                <div class="form-group">
+                    <label><strong>Description</strong></label>
+                    <div>@viewModel.Description</div>
+                </div>
+            }
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int IssueId { get; set; }
+
+    private IssueDetailModel viewModel;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        viewModel = await IssuesClient.GetIssueDetail(IssueId);
+    }
+}
