@@ -69,6 +69,7 @@ else
                             </div>
                         </div>
                         <TestIssue Users="users.Users"
+                                   Tester="@issue.Tester"
                                    OnTesterAssigned="(model) => MoveIssueToTesting(issue, model)"/>
                     </IssueActions>
                 </IssueCard>
@@ -82,7 +83,9 @@ else
                 <IssueCard Item="issue">
                     <IssueActions>
                         <div>
-                            <div class="form-group">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-success btn-sm" @onclick="() => CompleteIssue(issue)">Done</button>
+                                <button type="button" class="btn btn-warning btn-sm" @onclick="() => RejectIssue(issue)">Reject</button>
                                 <button type="button" class="btn btn-danger btn-sm" @onclick="() => CloseIssue(issue)">Close</button>
                             </div>
                         </div>
@@ -147,7 +150,9 @@ else
             
             viewModel.NewIssues.Remove(issue);
 
+            issue.State = Issue.IssueState.ToDo.ToString();
             issue.Assignee = users.Users.FirstOrDefault(u => u.Id == model.AssigneeId)?.UserName;
+
             viewModel.AssignedIssues.Add(issue);
         }
         catch (ApplicationException ex)
@@ -159,6 +164,8 @@ else
     async Task CloseIssue(IssuesListModel.IssueListItem issue)
     {
         await IssuesClient.CloseIssue(issue.Id);
+
+        issue.State = Issue.IssueState.Closed.ToString();
         RemoveIssue(issue);
     }
 
@@ -189,6 +196,8 @@ else
             await IssuesClient.StartIssue(issue.Id);
             
             viewModel.AssignedIssues.Remove(issue);
+            
+            issue.State = Issue.IssueState.InProgress.ToString();
             viewModel.InProgressIssues.Add(issue);
         }
         catch (ApplicationException ex)
@@ -206,7 +215,43 @@ else
             viewModel.InProgressIssues.Remove(issue);
 
             issue.Tester = users.Users.FirstOrDefault(u => u.Id == model.TesterId)?.UserName;
+            issue.State = Issue.IssueState.Testing.ToString();
+            
             viewModel.TestingIssues.Add(issue);
+        }
+        catch (ApplicationException ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    async Task RejectIssue(IssuesListModel.IssueListItem issue)
+    {
+        try
+        {
+            await IssuesClient.RejectIssue(issue.Id);
+
+            viewModel.TestingIssues.Remove(issue);
+
+            issue.State = Issue.IssueState.ToDo.ToString();
+            viewModel.AssignedIssues.Add(issue);
+        }
+        catch (ApplicationException ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    async Task CompleteIssue(IssuesListModel.IssueListItem issue)
+    {
+        try
+        {
+            await IssuesClient.CompleteIssue(issue.Id);
+
+            viewModel.TestingIssues.Remove(issue);
+
+            issue.State = Issue.IssueState.Done.ToString();
+            viewModel.CompletedIssues.Add(issue);
         }
         catch (ApplicationException ex)
         {

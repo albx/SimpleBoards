@@ -47,5 +47,23 @@ namespace SimpleBoards.Web.App.Http
                 throw new ApplicationException("Could not assign issue");
             }
         }
+
+        public async Task RejectIssue(int issueId)
+        {
+            var response = await Http.PatchAsync($"api/issues/{issueId}/reject", null);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException("Could not reject issue");
+            }
+        }
+
+        public async Task CompleteIssue(int issueId)
+        {
+            var response = await Http.PatchAsync($"api/issues/{issueId}/complete", null);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException("Could not complete issue");
+            }
+        }
     }
 }

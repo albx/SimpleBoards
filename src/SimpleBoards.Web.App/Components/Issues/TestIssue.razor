@@ -15,10 +15,12 @@
     </div>
 </EditForm>
 
-
 @code {
     [Parameter]
     public IEnumerable<UsersListModel.UserListItem> Users { get; set; }
+
+    [Parameter]
+    public string Tester { get; set; }
 
     [Parameter]
     public EventCallback<MoveIssueToTestingModel> OnTesterAssigned { get; set; }
@@ -29,6 +31,12 @@
     {
         await OnTesterAssigned.InvokeAsync(viewModel);
         viewModel = new();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        viewModel.TesterId = this.Users.SingleOrDefault(u => u.UserName == this.Tester)?.Id;
     }
 
     void Clear() => viewModel = new();
