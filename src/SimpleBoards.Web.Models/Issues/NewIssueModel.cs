@@ -16,8 +16,7 @@ namespace SimpleBoards.Web.Models.Issues
 
         [Required]
         public string Title { get; set; }
-
-        [Required]
+        
         public string Description { get; set; }
     }
 }

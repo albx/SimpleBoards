@@ -27,5 +27,25 @@ namespace SimpleBoards.Web.App.Http
                 throw new ApplicationException("Could not assign issue");
             }
         }
+
+        public Task CloseIssue(int issueId) => Http.DeleteAsync($"api/issues/{issueId}");
+
+        public async Task StartIssue(int issueId)
+        {
+            var response = await Http.PatchAsync($"api/issues/{issueId}/start", null);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException("Could not start issue");
+            }
+        }
+
+        public async Task MoveIssueToTesting(int issueId, MoveIssueToTestingModel model)
+        {
+            var response = await Http.PatchAsync($"api/issues/{issueId}/testing", JsonContent.Create(model));
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException("Could not assign issue");
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
-<EditForm Model="viewModel" class="col-md-12" role="form" OnValidSubmit="AssignIssueToUser">
+<EditForm Model="viewModel" class="col-md-12" role="form" OnValidSubmit="MoveIssueToTest">
     <div class="form-group">
-        <label for="@nameof(viewModel.AssigneeId)">Assign to</label>
-        <InputSelect @bind-Value="viewModel.AssigneeId" class="custom-select custom-select-sm">
+        <label for="@nameof(viewModel.TesterId)">Assign tester</label>
+        <InputSelect @bind-Value="viewModel.TesterId" class="custom-select custom-select-sm">
             <option>Choose a user</option>
             @foreach (var user in Users)
             {
@@ -21,13 +21,13 @@
     public IEnumerable<UsersListModel.UserListItem> Users { get; set; }
 
     [Parameter]
-    public EventCallback<AssignIssueModel> OnUserAssigned { get; set; }
+    public EventCallback<MoveIssueToTestingModel> OnTesterAssigned { get; set; }
 
-    private AssignIssueModel viewModel = new();
+    private MoveIssueToTestingModel viewModel = new();
 
-    async Task AssignIssueToUser() 
+    async Task MoveIssueToTest() 
     {
-        await OnUserAssigned.InvokeAsync(viewModel);
+        await OnTesterAssigned.InvokeAsync(viewModel);
         viewModel = new();
     }
 
