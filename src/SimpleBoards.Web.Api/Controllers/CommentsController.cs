@@ -2,10 +2,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SimpleBoards.Web.Models.Comments;
 using SimpleBoards.Web.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SimpleBoards.Web.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/issues/{issueId}/[controller]")]
     public class CommentsController : ControllerBase
     {

@@ -1,0 +1,16 @@
+<div class="col-md-12">
+    @foreach (var comment in Comments)
+    {
+        <div class="card">
+            <div class="card-body">
+                <small class="card-text">[@comment.CommentedAt.ToString()] <strong>@comment.User.UserName</strong>:</small>
+                <p class="card-text">@comment.Text</p>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<CommentModel> Comments { get; set; }
+}

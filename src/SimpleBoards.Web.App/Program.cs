@@ -57,6 +57,18 @@ namespace SimpleBoards.Web.App
                     return handler;
                 });
 
+            builder.Services.AddHttpClient<CommentsHttpClient>(c => c.BaseAddress = new Uri("https://localhost:6001"))
+                .AddHttpMessageHandler(provider => 
+                {
+                    var handler = provider.GetRequiredService<AuthorizationMessageHandler>()
+                        .ConfigureHandler(
+                            authorizedUrls: new[] { "https://localhost:6001" },
+                            scopes: new[] { "simpleboards.web.api" }
+                        );
+
+                    return handler;
+                });
+
             builder.Services.AddScoped(
                 provider => provider.GetRequiredService<IHttpClientFactory>().CreateClient("simpleboards.web.api"));
 
