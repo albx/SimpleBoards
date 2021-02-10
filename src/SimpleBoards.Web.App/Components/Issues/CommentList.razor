@@ -6,6 +6,9 @@
                 <small class="card-text">[@comment.CommentedAt.ToString()] <strong>@comment.User.UserName</strong>:</small>
                 <p class="card-text">@comment.Text</p>
             </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-danger btn-sm" @onclick="() => RemoveComment(comment)">Remove</button>
+            </div>
         </div>
     }
 </div>
@@ -13,4 +16,9 @@
 @code {
     [Parameter]
     public IEnumerable<CommentModel> Comments { get; set; }
+
+    [Parameter]
+    public EventCallback<CommentModel> OnCommentRemoved { get; set; }
+
+    async Task RemoveComment(CommentModel comment) => await OnCommentRemoved.InvokeAsync(comment);
 }

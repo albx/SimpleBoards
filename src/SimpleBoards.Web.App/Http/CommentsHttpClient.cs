@@ -18,5 +18,7 @@ namespace SimpleBoards.Web.App.Http
         public Task<IEnumerable<CommentModel>> GetComments(int issueId) => Http.GetFromJsonAsync<IEnumerable<CommentModel>>($"api/issues/{issueId}/comments");
 
         public Task AddNewComment(int issueId, NewCommentModel model) => Http.PostAsJsonAsync($"api/issues/{issueId}/comments", model);
+
+        public Task DeleteComment(int issueId, int commentId) => Http.DeleteAsync($"api/issues/{issueId}/comments/{commentId}");
     }
 }

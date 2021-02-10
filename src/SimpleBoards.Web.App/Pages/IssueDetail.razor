@@ -75,7 +75,8 @@ else
                 </div>
                 <hr/>
                 <div class="row">
-                    <CommentList Comments="viewModel.Comments" />
+                    <CommentList Comments="viewModel.Comments"
+                                 OnCommentRemoved="DeleteComment"/>
                 </div>
             }
         </div>
@@ -113,5 +114,11 @@ else
     {
         await CommentsClient.AddNewComment(IssueId, model);
         await LoadComments();
+    }
+
+    async Task DeleteComment(CommentModel comment)
+    {
+        await CommentsClient.DeleteComment(IssueId, comment.Id);
+        viewModel.Comments.Remove(comment);
     }
 }
