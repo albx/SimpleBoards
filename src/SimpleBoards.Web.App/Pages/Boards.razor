@@ -1,0 +1,24 @@
+@page "/boards"
+@attribute [Authorize]
+@inject BoardsHttpClient BoardsClient;
+
+<div class="row">
+    <NewBoard OnBoardCreated="ReloadBoards" />
+</div>
+<div class="row">
+    <BoardList Boards="viewModel.Boards" />
+</div>
+
+@code {
+    private BoardListModel viewModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LoadBoards();
+    }
+
+    private async Task LoadBoards() => viewModel = await BoardsClient.GetBoardsList();
+
+    async Task ReloadBoards() => await LoadBoards();
+}

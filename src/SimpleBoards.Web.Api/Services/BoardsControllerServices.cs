@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SimpleBoards.Core.Commands;
 using SimpleBoards.Core.Models;
 using SimpleBoards.Core.ReadModels;
-using SimpleBoards.Web.Api.Models.Boards;
+using SimpleBoards.Web.Models.Boards;
 
 namespace SimpleBoards.Web.Api.Services
 {
@@ -33,7 +33,8 @@ namespace SimpleBoards.Web.Api.Services
                     NumberOfNewIssues = b.Issues.Count(i => i.State == Issue.IssueState.New),
                     NumberOfIssuesInProgress = b.Issues.Count(i => i.State == Issue.IssueState.InProgress),
                     NumberOfIssuesToDo = b.Issues.Count(i => i.State == Issue.IssueState.ToDo),
-                    NumberOfIssueInTesting = b.Issues.Count(i => i.State == Issue.IssueState.Testing)
+                    NumberOfIssueInTesting = b.Issues.Count(i => i.State == Issue.IssueState.Testing),
+                    TotalNumberOfIssues = b.Issues.Count()
                 }).ToArray();
                 
             var model = new BoardListModel

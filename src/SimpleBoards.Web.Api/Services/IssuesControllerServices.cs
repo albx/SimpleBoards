@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SimpleBoards.Core.Commands;
 using SimpleBoards.Core.Models;
 using SimpleBoards.Core.ReadModels;
-using SimpleBoards.Web.Api.Models.Issues;
+using SimpleBoards.Web.Models.Issues;
 
 namespace SimpleBoards.Web.Api.Services
 {
@@ -24,15 +24,21 @@ namespace SimpleBoards.Web.Api.Services
         {
             var issues = Database.Issues
                 .Include(i => i.Board)
+                .Include(i => i.Reporter)
+                .Include(i => i.Assignee)
+                .Include(i => i.Tester)
                 .Where(i => i.BoardId == boardId)
                 .Where(i => i.State != Issue.IssueState.Closed)
                 .Select(i => new IssuesListModel.IssueListItem
                 {
                     Id = i.Id,
                     CreatedAt = i.CreatedAt,
-                    State = i.State,
+                    State = i.State.ToString(),
                     Title = i.Title,
-                    Type = i.Type
+                    Type = i.Type.ToString(),
+                    Reporter = i.Reporter.UserName,
+                    Assignee = i.Assignee == null ? null : i.Assignee.UserName,
+                    Tester = i.Tester == null ? null : i.Tester.UserName
                 }).ToArray();
 
             var model = new IssuesListModel
@@ -77,14 +83,14 @@ namespace SimpleBoards.Web.Api.Services
                     Id = issue.Reporter.Id,
                     UserName = issue.Reporter.UserName
                 },
-                State = issue.State,
+                State = issue.State.ToString(),
                 Tester = issue.Tester is null ? null : new IssueDetailModel.UserDescriptor
                 {
                     Id = issue.Tester.Id,
                     UserName = issue.Tester.UserName
                 },
                 Title = issue.Title,
-                Type = issue.Type
+                Type = issue.Type.ToString()
             };
 
             return model;

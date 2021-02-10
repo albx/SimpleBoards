@@ -1,0 +1,94 @@
+@page "/boards/{boardId:int}/issues/new"
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IssuesHttpClient IssuesClient;
+@inject NavigationManager Navigation;
+@using SimpleBoards.Core.Models;
+
+<div class="row">
+    <div class="col">
+        <h2>New issue</h2>
+    </div>
+    <div class="col-auto">
+        <a href="boards/@BoardId/issues" class="btn btn-primary">Back</a>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <EditForm Model="@viewModel" class="col-md-12" role="form" OnValidSubmit="OpenNewIssue">
+        <DataAnnotationsValidator />
+        <div class="form-group row">
+            <label class="col-auto">Reporter</label>
+            <div class="col">
+                <p class="form-control-plaintext">@reporterName</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="@nameof(viewModel.Type)">Type</label>
+            <InputSelect @bind-Value="viewModel.Type" class="form-control" DisplayName="@nameof(viewModel.Type)">
+                @foreach (var type in types)
+                {
+                    <option value="@type">@type.ToString()</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => viewModel.Type)" />
+        </div>
+        <div class="form-group">
+            <label for="@nameof(viewModel.Title)">Title</label>
+            <InputText @bind-Value="viewModel.Title" class="form-control" DisplayName="@nameof(viewModel.Title)" />
+            <ValidationMessage For="@(() => viewModel.Title)" />
+        </div>
+        <div class="form-group">
+            <label for="@nameof(viewModel.Description)">Description</label>
+            <InputTextArea @bind-Value="viewModel.Description" class="form-control" DisplayName="@nameof(viewModel.Description)" />
+            <ValidationMessage For="@(() => viewModel.Description)" />
+        </div>
+         <div class="form-group">
+            <button type="reset" class="btn btn-outline-primary mr-3" @onclick="Cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+
+    private NewIssueModel viewModel = new();
+
+    private Issue.IssueType[] types = Enum.GetValues<Issue.IssueType>();
+
+    private string reporterName;
+
+    private AuthenticationState authenticationState;
+
+    async Task OpenNewIssue()
+    {
+        await IssuesClient.OpenNewIssue(viewModel);
+        Navigation.NavigateTo($"boards/{BoardId}/issues");
+    }
+
+    void Cancel()
+    {
+        viewModel = new()
+        {
+            BoardId = this.BoardId
+        };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        reporterName = authenticationState.User.Identity.Name;
+        viewModel.ReporterId = authenticationState.User.FindFirst(c => c.Type == "sub").Value;
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        viewModel.BoardId = BoardId;
+        viewModel.ReporterId = authenticationState.User.FindFirst(c => c.Type == "sub").Value;
+    }
+}

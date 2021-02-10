@@ -1,0 +1,43 @@
+<EditForm Model="viewModel" class="col-md-12" role="form" OnValidSubmit="MoveIssueToTest">
+    <div class="form-group">
+        <label for="@nameof(viewModel.TesterId)">Assign tester</label>
+        <InputSelect @bind-Value="viewModel.TesterId" class="custom-select custom-select-sm">
+            <option>Choose a user</option>
+            @foreach (var user in Users)
+            {
+                <option value="@user.Id">@user.UserName</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary btn-sm" @onclick="Clear">Clear</button>
+        <button type="submit" class="btn btn-primary btn-sm">Assign</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public IEnumerable<UsersListModel.UserListItem> Users { get; set; }
+
+    [Parameter]
+    public string Tester { get; set; }
+
+    [Parameter]
+    public EventCallback<MoveIssueToTestingModel> OnTesterAssigned { get; set; }
+
+    private MoveIssueToTestingModel viewModel = new();
+
+    async Task MoveIssueToTest() 
+    {
+        await OnTesterAssigned.InvokeAsync(viewModel);
+        viewModel = new();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        viewModel.TesterId = this.Users.SingleOrDefault(u => u.UserName == this.Tester)?.Id;
+    }
+
+    void Clear() => viewModel = new();
+}

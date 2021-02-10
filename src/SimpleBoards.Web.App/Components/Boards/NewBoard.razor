@@ -1,0 +1,30 @@
+@inject BoardsHttpClient Boards
+
+<div class="col-md-12">
+    <EditForm Model="@viewModel" role="form" class="row mb-3" OnValidSubmit="CreateNewBoard">
+        <DataAnnotationsValidator />
+        <label class="col-auto">New board</label>
+        <div class="col-auto">
+            <InputText @bind-Value="viewModel.Name" class="form-control" />
+            <ValidationMessage For="@(() => viewModel.Name)" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private BoardModel viewModel = new();
+
+    [Parameter]
+    public EventCallback OnBoardCreated { get; set; }
+
+    async Task CreateNewBoard()
+    {
+        await Boards.CreateNewBoard(viewModel);
+        viewModel = new();
+
+        await OnBoardCreated.InvokeAsync();
+    }
+}

@@ -1,0 +1,269 @@
+@page "/boards/{boardId:int}/issues"
+@attribute [Authorize]
+@inject BoardsHttpClient BoardsClient
+@inject IssuesHttpClient IssuesClient
+@inject UsersHttpClient UsersClient
+@using SimpleBoards.Core.Models;
+@using System.Linq;
+
+@if (viewModel.Board is null)
+{
+    <h4>Loading...</h4>
+}
+else
+{
+<CascadingValue Value="@BoardId">
+    <div class="row">
+        <div class="col">
+            <h2>@viewModel.Board?.Name</h2>
+        </div>
+        <div class="col-auto">
+            <a href="boards/@BoardId/issues/new" class="btn btn-primary">New issue</a>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col col-issue">
+            <h5>New</h5>
+            <hr />
+            @foreach (var issue in viewModel.NewIssues)
+            {
+                <IssueCard Item="issue">
+                    <IssueActions>
+                        <div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    @onclick="() => CloseIssue(issue)">Close</button>
+                            </div>
+                        </div>
+                        <AssignIssue Users="users.Users" OnUserAssigned="(model) => AssignIssueToUser(issue, model)" />
+                    </IssueActions>
+                </IssueCard>
+            }
+        </div>
+        <div class="col col-issue">
+            <h5>To do</h5>
+            <hr />
+            @foreach (var issue in viewModel.AssignedIssues)
+            {
+                <IssueCard Item="issue">
+                    <IssueActions>
+                        <div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary btn-sm"
+                                    @onclick="() => StartIssue(issue)">Start</button>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    @onclick="() => CloseIssue(issue)">Close</button>
+                            </div>
+                        </div>
+                    </IssueActions>
+                </IssueCard>
+            }
+        </div>
+        <div class="col col-issue">
+            <h5>In progress</h5>
+            <hr />
+            @foreach (var issue in viewModel.InProgressIssues)
+            {
+                <IssueCard Item="issue">
+                    <IssueActions>
+                        <div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    @onclick="() => CloseIssue(issue)">Close</button>
+                            </div>
+                        </div>
+                        <TestIssue Users="users.Users" Tester="@issue.Tester"
+                            OnTesterAssigned="(model) => MoveIssueToTesting(issue, model)" />
+                    </IssueActions>
+                </IssueCard>
+            }
+        </div>
+        <div class="col col-issue">
+            <h5>Testing</h5>
+            <hr />
+            @foreach (var issue in viewModel.TestingIssues)
+            {
+                <IssueCard Item="issue">
+                    <IssueActions>
+                        <div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-success btn-sm"
+                                    @onclick="() => CompleteIssue(issue)">Done</button>
+                                <button type="button" class="btn btn-warning btn-sm"
+                                    @onclick="() => RejectIssue(issue)">Reject</button>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    @onclick="() => CloseIssue(issue)">Close</button>
+                            </div>
+                        </div>
+                    </IssueActions>
+                </IssueCard>
+            }
+        </div>
+        <div class="col col-issue">
+            <h5>Done</h5>
+            <hr />
+            @foreach (var issue in viewModel.CompletedIssues)
+            {
+                <IssueCard Item="issue" />
+            }
+        </div>
+    </div>
+</CascadingValue>
+}
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+
+    private IssuesViewModel viewModel = new();
+
+    private UsersListModel users = new();
+
+    public class IssuesViewModel
+    {
+        public BoardModel Board { get; set; }
+
+        public List<IssuesListModel.IssueListItem> NewIssues { get; set; } = new();
+
+        public List<IssuesListModel.IssueListItem> AssignedIssues { get; set; } = new();
+
+        public List<IssuesListModel.IssueListItem> InProgressIssues { get; set; } = new();
+
+        public List<IssuesListModel.IssueListItem> TestingIssues { get; set; } = new();
+
+        public List<IssuesListModel.IssueListItem> CompletedIssues { get; set; } = new();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        viewModel.Board = await BoardsClient.GetBoardDetail(BoardId);
+
+        var issues = await IssuesClient.GetIssuesList(BoardId);
+        users = await UsersClient.GetUsers();
+
+        viewModel.NewIssues = issues.Issues.Where(i => i.State == Issue.IssueState.New.ToString()).ToList();
+        viewModel.AssignedIssues = issues.Issues.Where(i => i.State == Issue.IssueState.ToDo.ToString()).ToList();
+        viewModel.InProgressIssues = issues.Issues.Where(i => i.State == Issue.IssueState.InProgress.ToString()).ToList();
+        viewModel.TestingIssues = issues.Issues.Where(i => i.State == Issue.IssueState.Testing.ToString()).ToList();
+        viewModel.CompletedIssues = issues.Issues.Where(i => i.State == Issue.IssueState.Done.ToString()).ToList();
+    }
+
+    async Task AssignIssueToUser(IssuesListModel.IssueListItem issue, AssignIssueModel model)
+    {
+        try
+        {
+            await IssuesClient.AssignIssue(issue.Id, model);
+
+            viewModel.NewIssues.Remove(issue);
+
+            issue.State = Issue.IssueState.ToDo.ToString();
+            issue.Assignee = users.Users.FirstOrDefault(u => u.Id == model.AssigneeId)?.UserName;
+
+            viewModel.AssignedIssues.Add(issue);
+        }
+        catch (ApplicationException ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    async Task CloseIssue(IssuesListModel.IssueListItem issue)
+    {
+        await IssuesClient.CloseIssue(issue.Id);
+
+        issue.State = Issue.IssueState.Closed.ToString();
+        RemoveIssue(issue);
+    }
+
+    private void RemoveIssue(IssuesListModel.IssueListItem issue)
+    {
+        if (issue.State == Issue.IssueState.New.ToString())
+        {
+            viewModel.NewIssues.Remove(issue);
+        }
+        else if (issue.State == Issue.IssueState.ToDo.ToString())
+        {
+            viewModel.AssignedIssues.Remove(issue);
+        }
+        else if (issue.State == Issue.IssueState.InProgress.ToString())
+        {
+            viewModel.InProgressIssues.Remove(issue);
+        }
+        else if (issue.State == Issue.IssueState.Testing.ToString())
+        {
+            viewModel.TestingIssues.Remove(issue);
+        }
+    }
+
+    async Task StartIssue(IssuesListModel.IssueListItem issue)
+    {
+        try
+        {
+            await IssuesClient.StartIssue(issue.Id);
+
+            viewModel.AssignedIssues.Remove(issue);
+
+            issue.State = Issue.IssueState.InProgress.ToString();
+            viewModel.InProgressIssues.Add(issue);
+        }
+        catch (ApplicationException ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    async Task MoveIssueToTesting(IssuesListModel.IssueListItem issue, MoveIssueToTestingModel model)
+    {
+        try
+        {
+            await IssuesClient.MoveIssueToTesting(issue.Id, model);
+
+            viewModel.InProgressIssues.Remove(issue);
+
+            issue.Tester = users.Users.FirstOrDefault(u => u.Id == model.TesterId)?.UserName;
+            issue.State = Issue.IssueState.Testing.ToString();
+
+            viewModel.TestingIssues.Add(issue);
+        }
+        catch (ApplicationException ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    async Task RejectIssue(IssuesListModel.IssueListItem issue)
+    {
+        try
+        {
+            await IssuesClient.RejectIssue(issue.Id);
+
+            viewModel.TestingIssues.Remove(issue);
+
+            issue.State = Issue.IssueState.ToDo.ToString();
+            viewModel.AssignedIssues.Add(issue);
+        }
+        catch (ApplicationException ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    async Task CompleteIssue(IssuesListModel.IssueListItem issue)
+    {
+        try
+        {
+            await IssuesClient.CompleteIssue(issue.Id);
+
+            viewModel.TestingIssues.Remove(issue);
+
+            issue.State = Issue.IssueState.Done.ToString();
+            viewModel.CompletedIssues.Add(issue);
+        }
+        catch (ApplicationException ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+}

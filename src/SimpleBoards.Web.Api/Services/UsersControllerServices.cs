@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SimpleBoards.Core.Commands;
 using SimpleBoards.Core.ReadModels;
-using SimpleBoards.Web.Api.Models.Users;
+using SimpleBoards.Web.Models.Users;
 
 namespace SimpleBoards.Web.Api.Services
 {

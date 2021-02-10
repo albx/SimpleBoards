@@ -14,6 +14,7 @@ using SimpleBoards.Core.Commands;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SimpleBoards.Core;
 using System;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SimpleBoards.Web.Api
 {
@@ -38,10 +39,20 @@ namespace SimpleBoards.Web.Api
                 .AddJwtBearer(options => 
                 {
                     options.Authority = "https://localhost:5001";
-
-                    options.Audience = "simpleboards.web.api";
-                    options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
                 });
+
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy("SimpleBoardsWebApi", policy => 
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "simpleboards.web.api");
+                });
+            });
 
             services.AddGrpcClient<Users.UsersClient>(options => 
             {
@@ -59,6 +70,16 @@ namespace SimpleBoards.Web.Api
                 .AddScoped<IssuesControllerServices>()
                 .AddScoped<CommentsControllerServices>()
                 .AddScoped<UsersControllerServices>();
+
+            services.AddCors(options => 
+            {
+                options.AddPolicy("Client", policy => 
+                {
+                    policy.WithOrigins("https://localhost:7001")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             
             services
                 .AddControllers()
@@ -84,6 +105,7 @@ namespace SimpleBoards.Web.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("Client");
 
             app.UseRouting();
 
@@ -92,7 +114,8 @@ namespace SimpleBoards.Web.Api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers()
+                    .RequireAuthorization("SimpleBoardsWebApi");
             });
         }
     }
