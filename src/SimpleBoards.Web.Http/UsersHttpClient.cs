@@ -1,9 +1,9 @@
+﻿using SimpleBoards.Web.Models.Users;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using SimpleBoards.Web.Models.Users;
 
-namespace SimpleBoards.Web.App.Http
+namespace SimpleBoards.Web.Http
 {
     public class UsersHttpClient
     {
@@ -15,5 +15,7 @@ namespace SimpleBoards.Web.App.Http
         }
 
         public Task<UsersListModel> GetUsers() => Http.GetFromJsonAsync<UsersListModel>("api/users");
+
+        public Task RegisterUser(RegisterUserModel model) => Http.PostAsJsonAsync("api/users", model);
     }
 }
