@@ -1,5 +1,13 @@
-﻿<CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
+﻿@using System.Reflection
+@using Microsoft.AspNetCore.Components.WebAssembly.Services
+
+@inject LazyAssemblyLoader AssemblyLoader
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly"
+            PreferExactMatches="@true"
+            AdditionalAssemblies="lazyLoadedAssemblies"
+            OnNavigateAsync="NavigateAsync">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
@@ -21,3 +29,18 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+@code {
+    List<Assembly> lazyLoadedAssemblies = new();
+
+    async Task NavigateAsync(NavigationContext context)
+    {
+        if (context.Path == "users")
+        {
+            var assemblies = await AssemblyLoader.LoadAssembliesAsync(
+                new[] { "SimpleBoards.Web.Users.dll" });
+
+            lazyLoadedAssemblies.AddRange(assemblies);
+        }
+    }
+}

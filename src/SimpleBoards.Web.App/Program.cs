@@ -1,14 +1,12 @@
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SimpleBoards.Web.App.Http;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using SimpleBoards.Web.Http;
 
 namespace SimpleBoards.Web.App
 {
