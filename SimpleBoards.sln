@@ -21,9 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleBoards.Web.App", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleBoards.Web.Models", "src\SimpleBoards.Web.Models\SimpleBoards.Web.Models.csproj", "{0AD02741-76C3-4685-AA37-7B4040CED371}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBoards.Web.Users", "src\SimpleBoards.Web.Users\SimpleBoards.Web.Users.csproj", "{B9D6CAF3-E1A5-4198-BA25-3B52588872C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleBoards.Web.Users", "src\SimpleBoards.Web.Users\SimpleBoards.Web.Users.csproj", "{B9D6CAF3-E1A5-4198-BA25-3B52588872C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBoards.Web.Http", "src\SimpleBoards.Web.Http\SimpleBoards.Web.Http.csproj", "{4293A3B7-B243-4BA9-9456-85BDA03D0D39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleBoards.Web.Http", "src\SimpleBoards.Web.Http\SimpleBoards.Web.Http.csproj", "{4293A3B7-B243-4BA9-9456-85BDA03D0D39}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -155,6 +157,18 @@ Global
 		{4293A3B7-B243-4BA9-9456-85BDA03D0D39}.Release|x64.Build.0 = Release|Any CPU
 		{4293A3B7-B243-4BA9-9456-85BDA03D0D39}.Release|x86.ActiveCfg = Release|Any CPU
 		{4293A3B7-B243-4BA9-9456-85BDA03D0D39}.Release|x86.Build.0 = Release|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Debug|x64.Build.0 = Debug|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Debug|x86.Build.0 = Debug|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Release|x64.ActiveCfg = Release|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Release|x64.Build.0 = Release|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Release|x86.ActiveCfg = Release|Any CPU
+		{CEA62DE8-9A82-4BF8-995A-C0C49D69C2D1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

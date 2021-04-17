@@ -13,7 +13,7 @@ namespace SimpleBoards.Persistence.SqlServer
 
         public BoardsContextFactory()
         {
-            _connectionString = "Server=.\\SQLExpress;Database=SimpleBoards;Trusted_Connection=True;MultipleActiveResultSets=true";
+            _connectionString = "Server=host.docker.internal;Database=SimpleBoards;User Id=sa;Password=S1mpl3Bo4rds!;MultipleActiveResultSets=true";
             _migrationAssembly = this.GetType().Assembly;
         }
 

@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  simpleboards.identity:
+    image: ${DOCKER_REGISTRY-}simpleboardsidentity
+    build:
+      context: .
+      dockerfile: src/SimpleBoards.Identity/Dockerfile
+
+  simpleboards.identity.grpc:
+    image: ${DOCKER_REGISTRY-}simpleboardsidentitygrpc
+    build:
+      context: .
+      dockerfile: src/SimpleBoards.Identity.Grpc/Dockerfile
+
+
+  simpleboards.web.api:
+    image: ${DOCKER_REGISTRY-}simpleboardswebapi
+    build:
+      context: .
+      dockerfile: src/SimpleBoards.Web.Api/Dockerfile
+
+  simpleboards.data:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    user: root
+    ports:
+        - "1433:1433"
+    restart: always
+    environment:
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=S1mpl3Bo4rds!
+        - MSSQL_PID=Express
+    volumes:
+        - sqlsystem:/var/opt/mssql
+        - sqldata:/var/opt/mssql/data
+        - sqllog:/var/opt/mssql/log
+        - sqlsecrets:/var/opt/mssql/secrets
+
+volumes:
+    sqlsystem:
+    sqldata:
+    sqllog:
+    sqlsecrets:
+    mongodata:
+    mongoconfig:
