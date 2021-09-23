@@ -1,0 +1,36 @@
+﻿@inherits TestContext
+
+@code {
+    [Fact]
+    public void BoardList_Should_Render_Loading_Message_If_Board_List_Is_Null()
+    {
+        var component = Render(@<BoardList Boards="null" />);
+        component.MarkupMatches(@<div class="col"><h4>Loading...</h4></div>);
+    }
+
+    [Fact]
+    public void BoardList_Should_Render_The_Specified_List_Of_Boards()
+    {
+        var boards = new[]
+        {
+            new BoardListModel.BoardListItem { Id = 1, Name = "Board1", NumberOfIssueInTesting = 1, NumberOfIssuesDone = 1, NumberOfIssuesInProgress = 1, NumberOfIssuesToDo = 1, NumberOfNewIssues = 1, TotalNumberOfIssues = 5 }
+        };
+
+        var component = Render(@<BoardList Boards="boards" />);
+        component.MarkupMatches(
+            @<div class="col-md-4">
+                 <div class="card">
+                     <div class="card-header">Board1</div>
+                     <ul class="list-group list-group-flush">
+                         <li class="list-group-item">5 Issues</li>
+                         <li class="list-group-item">1 new issues</li>
+                         <li class="list-group-item">1 issues assigned</li>
+                         <li class="list-group-item">1 issues in progress</li>
+                         <li class="list-group-item">1 issues to test</li>
+                         <li class="list-group-item">1 issues completed</li>
+                     </ul>
+                     <a href="boards/1/issues" class="btn btn-primary">View</a>
+                 </div>
+             </div>);
+    }
+}

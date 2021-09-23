@@ -1,0 +1,29 @@
+﻿@inherits TestContext
+
+@code {
+    private MockHttpMessageHandler httpClientMock;
+
+    public NewBoardTest()
+    {
+        httpClientMock = Services.AddHttpClientMock();
+        Services.AddSingleton<BoardsHttpClient>();
+    }
+
+    [Fact]
+    public void NewBoard_Should_Render_An_Error_Message_If_Http_Call_Fails()
+    {
+        httpClientMock
+            .When(HttpMethod.Post, "/api/boards")
+            .RespondWithStatusCode(HttpStatusCode.BadRequest);
+
+        var component = RenderComponent<NewBoard>();
+        var newBoardForm = component.Find("#newBoardForm");
+        component.Find("#boardName").Change("test board");
+
+        newBoardForm.Submit();
+        component.Render();
+
+        var errorMessage = component.Find("#errorMessage");
+        Assert.Equal("An error occured. Please try again later", errorMessage.TextContent);
+    }
+}

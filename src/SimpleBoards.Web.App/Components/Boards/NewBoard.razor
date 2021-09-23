@@ -1,11 +1,16 @@
 @inject BoardsHttpClient Boards
 
 <div class="col-md-12">
-    <EditForm Model="@viewModel" role="form" class="row mb-3" OnValidSubmit="CreateNewBoard">
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="row mb-3 alert alert-danger" id="errorMessage">@errorMessage</div>
+    }
+
+    <EditForm Model="@viewModel" role="form" class="row mb-3" id="newBoardForm" OnValidSubmit="CreateNewBoard">
         <DataAnnotationsValidator />
         <label class="col-auto">New board</label>
         <div class="col-auto">
-            <InputText @bind-Value="viewModel.Name" class="form-control" />
+            <InputText @bind-Value="viewModel.Name" id="boardName" class="form-control" />
             <ValidationMessage For="@(() => viewModel.Name)" />
         </div>
         <div class="col-auto">
@@ -17,14 +22,27 @@
 @code {
     private BoardModel viewModel = new();
 
+    private string errorMessage;
+
     [Parameter]
     public EventCallback OnBoardCreated { get; set; }
 
     async Task CreateNewBoard()
     {
-        await Boards.CreateNewBoard(viewModel);
-        viewModel = new();
+        try
+        {
+            await Boards.CreateNewBoard(viewModel);
+            viewModel = new();
 
-        await OnBoardCreated.InvokeAsync();
+            await OnBoardCreated.InvokeAsync();
+        }
+        catch (ApplicationException)
+        {
+            errorMessage = "An error occured. Please try again later";
+        }
+        finally
+        {
+            StateHasChanged();
+        }
     }
 }
