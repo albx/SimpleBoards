@@ -1,0 +1,29 @@
+﻿@inherits TestContext
+@using Bunit.TestDoubles
+
+@code {
+    public NewIssueTest()
+    {
+        this.Services.AddHttpClientMock();
+        this.Services.AddSingleton<IssuesHttpClient>();
+    }
+
+    [Fact]
+    public void NewIssue_Should_Display_Authenticated_User_Name_As_Reporter()
+    {
+        var reporterName = "albx";
+
+        var authContext = this.AddTestAuthorization();
+        authContext.SetAuthorized(reporterName);
+        authContext.SetClaims(new System.Security.Claims.Claim("sub", Guid.NewGuid().ToString()));
+
+        var component = RenderComponent<NewIssue>(parameters =>
+        {
+            parameters.Add(p => p.BoardId, 1);
+        });
+
+        var reporterField = component.Find("#reporterName");
+
+        Assert.Equal(reporterName, reporterField.TextContent);
+    }
+}

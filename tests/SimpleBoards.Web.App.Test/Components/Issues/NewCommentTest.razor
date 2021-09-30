@@ -1,0 +1,29 @@
+﻿@inherits TestContext
+@using Bunit.TestDoubles
+
+@code {
+    private string userId = Guid.NewGuid().ToString();
+    public NewCommentTest()
+    {
+        this.AddTestAuthorization()
+            .SetAuthorized("albx87")
+            .SetClaims(new System.Security.Claims.Claim("sub", userId));
+    }
+
+    [Fact]
+    public void AddComment_Should_Send_Comment_Info_When_Form_Is_Submitted()
+    {
+        string commentText = "This is a test comment";
+        void NewCommentAddedHandler(SimpleBoards.Web.Models.Comments.NewCommentModel model)
+        {
+            Assert.Equal(commentText, model.CommentText);
+            Assert.Equal(userId, model.UserId);
+        }
+
+        var component = Render(@<NewComment OnNewCommentAdded="NewCommentAddedHandler" />);
+        var form = component.Find("form");
+        component.Find("textarea").Change(commentText);
+
+        form.Submit();
+    }
+}

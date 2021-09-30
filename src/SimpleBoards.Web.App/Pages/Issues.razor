@@ -3,6 +3,7 @@
 @inject BoardsHttpClient BoardsClient
 @inject IssuesHttpClient IssuesClient
 @inject UsersHttpClient UsersClient
+@inject IJSRuntime JSRuntime
 @using SimpleBoards.Core.Models;
 @using System.Linq;
 
@@ -171,10 +172,13 @@ else
 
     async Task CloseIssue(IssuesListModel.IssueListItem issue)
     {
-        await IssuesClient.CloseIssue(issue.Id);
+        if (await JSRuntime.InvokeAsync<bool>("confirm", $"You are going to close the issue #{issue.Id}. Continue?"))
+        {
+            await IssuesClient.CloseIssue(issue.Id);
 
-        issue.State = Issue.IssueState.Closed.ToString();
-        RemoveIssue(issue);
+            issue.State = Issue.IssueState.Closed.ToString();
+            RemoveIssue(issue);
+        }
     }
 
     private void RemoveIssue(IssuesListModel.IssueListItem issue)

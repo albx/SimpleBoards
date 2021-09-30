@@ -26,4 +26,16 @@
         var errorMessage = component.Find("#errorMessage");
         Assert.Equal("An error occured. Please try again later", errorMessage.TextContent);
     }
+
+    [Fact]
+    public void NewBoard_Should_Render_Validation_Error_Message_If_Submitted_Form_Is_Invalid()
+    {
+        var component = RenderComponent<NewBoard>();
+        var newBoardForm = component.Find("#newBoardForm");
+
+        newBoardForm.Submit();
+        component.Render();
+
+        Assert.NotNull(component.Find("div.validation-message"));
+    }
 }
