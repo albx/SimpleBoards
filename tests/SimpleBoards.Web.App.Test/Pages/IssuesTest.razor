@@ -1,0 +1,78 @@
+﻿@inherits TestContext
+
+@code {
+    private MockHttpMessageHandler httpClientMock;
+    private string userId = Guid.NewGuid().ToString();
+    private int boardId = 1;
+
+    public IssuesTest()
+    {
+        httpClientMock = this.Services.AddHttpClientMock();
+        this.Services.AddSingleton<IssuesHttpClient>();
+        this.Services.AddSingleton<BoardsHttpClient>();
+        this.Services.AddSingleton<UsersHttpClient>();
+
+        this.AddTestAuthorization()
+            .SetAuthorized("albx87")
+            .SetClaims(new System.Security.Claims.Claim("sub", userId));
+
+        httpClientMock.When(HttpMethod.Get, $"/api/boards/{boardId}")
+            .RespondAsJson(new BoardModel { Name = "test" });
+
+        httpClientMock.When(HttpMethod.Get, $"/api/issues?boardId={boardId}")
+            .RespondAsJson(new IssuesListModel
+            {
+                Issues = new[]
+                {
+                    new IssuesListModel.IssueListItem() { Id = 1, State = "New", Reporter = "albx87", Title = "test issue" }
+                }
+            });
+
+        httpClientMock.When(HttpMethod.Get, "/api/users")
+            .RespondAsJson(new SimpleBoards.Web.Models.Users.UsersListModel
+            {
+                Users = new[]
+                {
+                    new SimpleBoards.Web.Models.Users.UsersListModel.UserListItem { Id = userId, UserName = "albx87" }
+                }
+            });
+    }
+
+    [Fact]
+    public void CloseIssue_Should_Call_Api_Correctly_If_Confirmed()
+    {
+        var request = httpClientMock.When(HttpMethod.Delete, "/api/issues/1").RespondWithStatusCode(HttpStatusCode.OK);
+        var confirm = JSInterop.Setup<bool>("confirm", "You are going to close the issue #1. Continue?");
+
+        var component = RenderComponent<Issues>(
+            parameters => parameters.Add(p => p.BoardId, boardId));
+
+        component.Render();
+
+        var closeIssueButton = component.FindAll("#closeIssue-1").First();
+        closeIssueButton.Click();
+
+        confirm.SetResult(true);
+
+        Assert.Equal(1, httpClientMock.GetMatchCount(request));
+    }
+
+    [Fact]
+    public void CloseIssue_Should_Not_Call_Api_If_Not_Confirmed()
+    {
+        var request = httpClientMock.When(HttpMethod.Delete, "/api/issues/1").RespondWithStatusCode(HttpStatusCode.OK);
+        var confirm = JSInterop.Setup<bool>("confirm", "You are going to close the issue #1. Continue?");
+
+        var component = RenderComponent<Issues>(
+            parameters => parameters.Add(p => p.BoardId, boardId));
+
+        component.Render();
+
+        var closeIssueButton = component.FindAll("#closeIssue-1").First();
+        closeIssueButton.Click();
+
+        confirm.SetResult(false);
+
+        Assert.Equal(0, httpClientMock.GetMatchCount(request));
+    }
+}
