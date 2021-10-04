@@ -44,15 +44,15 @@
         var request = httpClientMock.When(HttpMethod.Delete, "/api/issues/1").RespondWithStatusCode(HttpStatusCode.OK);
         var confirm = JSInterop.Setup<bool>("confirm", "You are going to close the issue #1. Continue?");
 
-        var component = RenderComponent<Issues>(
-            parameters => parameters.Add(p => p.BoardId, boardId));
+        var component = RenderComponent<Issues>(parameters => parameters.Add(p => p.BoardId, boardId));
 
-        component.Render();
+        component.WaitForState(() => component.FindComponents<IssueCard>().Count == 1);
 
         var closeIssueButton = component.FindAll("#closeIssue-1").First();
         closeIssueButton.Click();
 
         confirm.SetResult(true);
+        component.Render();
 
         Assert.Equal(1, httpClientMock.GetMatchCount(request));
     }
@@ -63,15 +63,14 @@
         var request = httpClientMock.When(HttpMethod.Delete, "/api/issues/1").RespondWithStatusCode(HttpStatusCode.OK);
         var confirm = JSInterop.Setup<bool>("confirm", "You are going to close the issue #1. Continue?");
 
-        var component = RenderComponent<Issues>(
-            parameters => parameters.Add(p => p.BoardId, boardId));
-
-        component.Render();
+        var component = RenderComponent<Issues>(parameters => parameters.Add(p => p.BoardId, boardId));
+        component.WaitForState(() => component.FindComponents<IssueCard>().Count == 1);
 
         var closeIssueButton = component.FindAll("#closeIssue-1").First();
         closeIssueButton.Click();
 
         confirm.SetResult(false);
+        component.Render();
 
         Assert.Equal(0, httpClientMock.GetMatchCount(request));
     }
